@@ -4,4 +4,8 @@ class DirectoryResource < FileSystemResource
     super
   end
 
+  def posix_mode
+    format_posix_mode(true)
+  end
+
 end
