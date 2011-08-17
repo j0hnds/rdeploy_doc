@@ -229,4 +229,59 @@ describe RDeployDoc do
     end
 
   end
+
+  context "Apply Method" do
+
+    before(:each) do 
+      directory :instance_directory do |d|
+        d.path = "/var/www/abaqis"
+        d.owner = 'root'
+        d.group = 'developers'
+        d.mode = 02755
+      end
+      directory :releases_directory => directories[:instance_directory] do |d|
+        d.path = "/var/www/abaqis/releases"
+        d.owner = 'root'
+        d.group = 'developers'
+        d.mode = 02755
+      end
+      directory :shared_directory => directories[:instance_directory] do |d|
+        d.path = "/var/www/abaqis/shared"
+        d.owner = 'root'
+        d.group = 'developers'
+        d.mode = 02755
+      end
+      directory :shared_config_directory => directories[:shared_directory] do |d|
+        d.path = "/var/www/abaqis/shared/config"
+        d.owner = 'root'
+        d.group = 'developers'
+        d.mode = 02755
+      end
+      file :bundle_config => directories[:shared_config_directory] do |f|
+        f.path = "/var/www/abaqis/shared/config/bundle_config"
+        f.owner = 'root'
+        f.group = 'developers'
+        f.mode = 0644
+      end
+    end
+    
+    it "should apply a block of code to the ordered set of directories" do
+      paths = []
+      apply_to_directories do |d|
+        paths << d.path
+      end
+      paths.should == [ "/var/www/abaqis",
+                        "/var/www/abaqis/releases",
+                        "/var/www/abaqis/shared",
+                        "/var/www/abaqis/shared/config" ]
+    end
+
+    it "should apply a block of code to the ordered set of files" do
+      paths = []
+      apply_to_files do |f|
+        paths << f.path
+      end
+      paths.should == [ "/var/www/abaqis/shared/config/bundle_config" ]
+    end
+  end
 end

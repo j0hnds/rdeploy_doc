@@ -13,6 +13,7 @@ module RDeployDoc
     :file => :files,
     :package => :packages,
     :service => :services }.each_pair do |resource, plural|
+    eval "def apply_to_#{plural}() unique_resources(#{plural}).each { |d| yield d if block_given?} end"
     # Define the resource accessors
     eval "def #{plural}() @#{resource}_resources ||= {} end"
     eval <<EOF 
@@ -24,9 +25,17 @@ module RDeployDoc
 EOF
   end
 
+
+
   def desc(description) @current_description = description end
+  
+#  def apply_to_directories() unique_resources(directories).each { |d| yield d if block_given?} end
 
   private
+
+  def unique_resources(resources)
+    resources.values.inject([]) { |a,r| a.concat((r.ordered_prerequisites(r.class) << r)) }.uniq
+  end
 
   def resource_name(args)
     name = args if args.is_a?(Symbol)
