@@ -37,7 +37,7 @@ EOF
 
   def resource_prerequisites(args)
     value = args.is_a?(Hash) ? args.values.first : []
-    (value.is_a?(Array) ? value : [ value ]).map { |v| v.to_sym }
+    (value.is_a?(Array) ? value : [ value ])
   end
   
 end

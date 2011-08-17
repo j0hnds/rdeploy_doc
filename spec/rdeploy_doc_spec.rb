@@ -136,19 +136,19 @@ describe RDeployDoc do
       ps.should == []
     end
 
-    it "should return the prerequisite as an array of symbols if a hash is specified with a symbol prerequisite" do
+    it "should return the prerequisite as an array of objects if a hash is specified with a symbol prerequisite" do
       ps = resource_prerequisites(:the_name => :the_pre)
       ps.should == [ :the_pre ]
     end
 
-    it "should return the prerequisite as an array of symbols if a hash is specified with a string prerequisite" do
+    it "should return the prerequisite as an array of strings if a hash is specified with a string prerequisite" do
       ps = resource_prerequisites(:the_name => 'the_pre')
-      ps.should == [ :the_pre ]
+      ps.should == [ 'the_pre' ]
     end
 
-    it "should return the prerequisites as an array of symbols even if all the prerequisites are not symbols" do
+    it "should return the prerequisites as an array of the specific types even if all the prerequisites are not symbols" do
       ps = resource_prerequisites(:the_name => [ 'the_pre', :another_pre, 'yet_another_pre' ])
-      ps.should == [:the_pre, :another_pre, :yet_another_pre ]
+      ps.should == ['the_pre', :another_pre, 'yet_another_pre' ]
     end
 
     it "should return an empty prerequisite array when the hash argument has an empty array" do
