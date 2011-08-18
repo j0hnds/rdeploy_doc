@@ -25,12 +25,8 @@ module RDeployDoc
 EOF
   end
 
-
-
   def desc(description) @current_description = description end
   
-#  def apply_to_directories() unique_resources(directories).each { |d| yield d if block_given?} end
-
   private
 
   def unique_resources(resources)
