@@ -34,4 +34,25 @@ describe Resource do
 
   end
 
+  context "Resource Children" do
+    
+    it "tracks the children of resources as they are constructed" do
+      top_level_rsrc = Resource.new(nil, :top_level, [])
+      second_level_rsrc = Resource.new(nil, :second_level, [ top_level_rsrc ])
+
+      top_level_rsrc.children.should == [ second_level_rsrc ]
+      second_level_rsrc.children.should be_empty
+    end
+
+    it "it ignores non-resource prerequesites when tracking children" do
+      top_level_rsrc = Resource.new(nil, :top_level, [])
+      second_level_rsrc = Resource.new(nil, :second_level, [ top_level_rsrc, :another_predecessor ])
+
+      top_level_rsrc.children.should == [ second_level_rsrc ]
+      second_level_rsrc.children.should be_empty
+    end
+
+    
+  end
+
 end

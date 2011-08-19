@@ -1,10 +1,13 @@
 class Resource
   attr_reader :description, :name, :prerequisites
+  attr_accessor :children
 
   def initialize(description, name, prerequisites)
     @description = description
     @name = name
     @prerequisites = prerequisites
+    @children = []
+    @prerequisites.each { |p| p.children << self if p.is_a?(Resource) }
   end
 
   def ordered_prerequisites(clazz)
