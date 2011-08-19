@@ -5,12 +5,14 @@ require 'service_resource'
 require 'file_system_resource'
 require 'directory_resource'
 require 'file_resource'
+require 'link_resource'
 
 module RDeployDoc
 
   # Define the accessors and factory methods for each of the resources defined
   { :directory => :directories,
     :file => :files,
+    :link => :link,
     :package => :packages,
     :service => :services }.each_pair do |resource, plural|
     eval "def apply_to_#{plural}() unique_resources(#{plural}).each { |d| yield d if block_given?} end"

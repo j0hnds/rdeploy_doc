@@ -10,6 +10,13 @@ describe DirectoryResource do
     resource.prerequisites.should == [ :pre1, :pre2 ]
   end
 
+  it "should provide a means of identifying the content to be contained by the directory" do
+    resource = DirectoryResource.new(nil, :name, [])
+
+    resource.content = 'content string'
+    resource.content.should == 'content string'
+  end
+
   context "Formatted Output" do
     
     before(:each) do

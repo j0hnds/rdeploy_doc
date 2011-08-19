@@ -1,5 +1,9 @@
 class FileSystemResource < Resource
 
+  DIRECTORY_RESOURCE_TYPE = 'd'
+  FILE_RESOURCE_TYPE = '-'
+  LINK_RESOURCE_TYPE = 'l'
+
   attr_accessor :path, :owner, :group, :mode
 
   def initialize(description, name, prerequisites)
@@ -7,7 +11,7 @@ class FileSystemResource < Resource
   end
 
   def to_posix
-    format("%10s %-10s %-10s %s", posix_mode, @owner, @group, File.basename(@path))
+    format("%10s %-10s %-10s %s", posix_mode, @owner, @group, targeted_name)
   end
 
   def posix_mode
@@ -16,8 +20,12 @@ class FileSystemResource < Resource
 
   private
 
-  def format_posix_mode(directory = false)
-    mode_string = directory ? 'd' : '-'
+  def targeted_name
+    File.basename(@path)
+  end
+
+  def format_posix_mode(resource_type=FileSystemResource::FILE_RESOURCE_TYPE)
+    mode_string = resource_type.clone
 
     set_gid_bit = ((02 * 01000) & @mode) == 1024
     set_uid_bit = ((04 * 01000) & @mode) == 2048
