@@ -73,6 +73,42 @@ describe RDeployDoc do
 
     end
 
+    context "Links" do
+
+      it "should construct a link resource with no description and no block" do
+        l = link(:a_link => :prereq)
+        l.should_not be_nil
+        l.is_a?(LinkResource)
+        l.description.should be_nil
+        l.name.should == :a_link
+        l.prerequisites.should == [ :prereq ]
+        links[:a_link].should == l
+      end
+
+      it "should construct a link resource with a description and a block" do
+        desc 'Link Description'
+        l = link(:a_link => :prereq) do |the_link|
+          the_link.path = '/tmp'
+          the_link.owner = 'root'
+          the_link.group = 'developers'
+          the_link.target = 'bob'
+          the_link.mode = 02775
+        end
+        l.should_not be_nil
+        l.is_a?(LinkResource)
+        l.description.should == 'Link Description'
+        l.name.should == :a_link
+        l.path.should == '/tmp'
+        l.owner.should == 'root'
+        l.group.should == 'developers'
+        l.target.should == 'bob'
+        l.mode.should == 02775
+        l.prerequisites.should == [ :prereq ]
+        links[:a_link].should == l
+      end
+
+    end
+
     context "Packages" do
 
       it "should construct a package resource with no description and no block" do

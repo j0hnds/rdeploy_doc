@@ -12,7 +12,7 @@ module RDeployDoc
   # Define the accessors and factory methods for each of the resources defined
   { :directory => :directories,
     :file => :files,
-    :link => :link,
+    :link => :links,
     :package => :packages,
     :service => :services }.each_pair do |resource, plural|
     eval "def apply_to_#{plural}() unique_resources(#{plural}).each { |d| yield d if block_given?} end"
