@@ -34,9 +34,12 @@ pkg
 #tmtags
 #
 # For emacs:
-#*~
-#\#*
-#.\#*
+*~
+\#*
+.\#*
+.emacs_project
 #
 # For vim:
-#*.swp
+*.swp
+# For rvm:
+.rvmrc
