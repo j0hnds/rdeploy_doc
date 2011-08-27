@@ -8,13 +8,24 @@ require 'file_resource'
 require 'link_resource'
 
 module RDeployDoc
+  module Utils
+    
+    def self.pluralize(noun)
+      return noun[0...-1] << 'ies' if noun.end_with?('y')
+      noun << 's'
+    end
+  
+  end
+
+  RESOURCE_TYPES = [ :directory,
+                     :file,
+                     :link,
+                     :package,
+                     :service ]
 
   # Define the accessors and factory methods for each of the resources defined
-  { :directory => :directories,
-    :file => :files,
-    :link => :links,
-    :package => :packages,
-    :service => :services }.each_pair do |resource, plural|
+  RESOURCE_TYPES.each do |resource|
+    plural = Utils.pluralize(resource.to_s)
     eval "def apply_to_#{plural}() unique_resources(#{plural}).each { |d| yield d if block_given?} end"
     # Define the resource accessors
     eval "def #{plural}() @#{resource}_resources ||= {} end"
@@ -46,5 +57,5 @@ EOF
     value = args.is_a?(Hash) ? args.values.first : []
     (value.is_a?(Array) ? value : [ value ])
   end
-  
+
 end
