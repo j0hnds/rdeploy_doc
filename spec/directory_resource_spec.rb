@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe DirectoryResource do
+describe RDeployDoc::DirectoryResource do
   
   it "should require creation with a description, name and set of prerequisites" do
-    resource = DirectoryResource.new('The description', :name, [ :pre1, :pre2 ])
+    resource = RDeployDoc::DirectoryResource.new('The description', :name, [ :pre1, :pre2 ])
 
     resource.description.should == 'The description'
     resource.name.should == :name
@@ -11,7 +11,7 @@ describe DirectoryResource do
   end
 
   it "should provide a means of identifying the content to be contained by the directory" do
-    resource = DirectoryResource.new(nil, :name, [])
+    resource = RDeployDoc::DirectoryResource.new(nil, :name, [])
 
     resource.content = 'content string'
     resource.content.should == 'content string'
@@ -20,7 +20,7 @@ describe DirectoryResource do
   context "Formatted Output" do
     
     before(:each) do
-      @fr = DirectoryResource.new('The description', :name, [ :pre1, :pre2 ])
+      @fr = RDeployDoc::DirectoryResource.new('The description', :name, [ :pre1, :pre2 ])
     end
 
     it "should display the directory resource information in the form of a Posix long file listing" do

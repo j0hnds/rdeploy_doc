@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe LinkResource do
+describe RDeployDoc::LinkResource do
   
   it "should require creation with a description, name and set of prerequisites" do
-    resource = LinkResource.new('The description', :name, [ :pre1, :pre2 ])
+    resource = RDeployDoc::LinkResource.new('The description', :name, [ :pre1, :pre2 ])
 
     resource.description.should == 'The description'
     resource.name.should == :name
@@ -13,7 +13,7 @@ describe LinkResource do
   context "Formatted Output" do
     
     before(:each) do
-      @lr = LinkResource.new('The description', :name, [ :pre1, :pre2 ])
+      @lr = RDeployDoc::LinkResource.new('The description', :name, [ :pre1, :pre2 ])
     end
 
     it "should display the file resource information in the form of a Posix long file listing" do

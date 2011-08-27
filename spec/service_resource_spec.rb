@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe ServiceResource do
+describe RDeployDoc::ServiceResource do
   
   it "should require creation with a description, name and set of prerequisites" do
-    resource = ServiceResource.new('The description', :name, [ :pre1, :pre2 ])
+    resource = RDeployDoc::ServiceResource.new('The description', :name, [ :pre1, :pre2 ])
 
     resource.description.should == 'The description'
     resource.name.should == :name

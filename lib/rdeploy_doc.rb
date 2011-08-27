@@ -1,21 +1,14 @@
 # Require all the necessary code
-require 'resource'
-require 'package_resource'
-require 'service_resource'
-require 'file_system_resource'
-require 'directory_resource'
-require 'file_resource'
-require 'link_resource'
+require 'rdeploy_doc/resource'
+require 'rdeploy_doc/package_resource'
+require 'rdeploy_doc/service_resource'
+require 'rdeploy_doc/file_system_resource'
+require 'rdeploy_doc/directory_resource'
+require 'rdeploy_doc/file_resource'
+require 'rdeploy_doc/link_resource'
+require 'rdeploy_doc/utils'
 
 module RDeployDoc
-  module Utils
-    
-    def self.pluralize(noun)
-      return noun[0...-1] << 'ies' if noun.end_with?('y')
-      noun << 's'
-    end
-  
-  end
 
   RESOURCE_TYPES = [ :directory,
                      :file,

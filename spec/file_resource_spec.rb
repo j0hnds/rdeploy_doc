@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe FileResource do
+describe RDeployDoc::FileResource do
   
   it "should require creation with a description, name and set of prerequisites" do
-    resource = FileResource.new('The description', :name, [ :pre1, :pre2 ])
+    resource = RDeployDoc::FileResource.new('The description', :name, [ :pre1, :pre2 ])
 
     resource.description.should == 'The description'
     resource.name.should == :name
@@ -13,7 +13,7 @@ describe FileResource do
   context "Formatted Output" do
     
     before(:each) do
-      @fr = FileResource.new('The description', :name, [ :pre1, :pre2 ])
+      @fr = RDeployDoc::FileResource.new('The description', :name, [ :pre1, :pre2 ])
     end
 
     it "should display the file resource information in the form of a Posix long file listing" do

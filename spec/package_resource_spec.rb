@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe PackageResource do
+describe RDeployDoc::PackageResource do
   
   it "should require creation with a description, name and set of prerequisites" do
-    resource = PackageResource.new('The description', :name, [ :pre1, :pre2 ])
+    resource = RDeployDoc::PackageResource.new('The description', :name, [ :pre1, :pre2 ])
 
     resource.description.should == 'The description'
     resource.name.should == :name

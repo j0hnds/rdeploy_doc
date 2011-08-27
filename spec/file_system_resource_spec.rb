@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe FileSystemResource do
+describe RDeployDoc::FileSystemResource do
   
   it "should require creation with a description, name and set of prerequisites" do
-    resource = FileSystemResource.new('The description', :name, [ :pre1, :pre2 ])
+    resource = RDeployDoc::FileSystemResource.new('The description', :name, [ :pre1, :pre2 ])
 
     resource.description.should == 'The description'
     resource.name.should == :name
@@ -15,7 +15,7 @@ describe FileSystemResource do
     context "Mode formatting" do
 
       it "should format the mode for a simple file" do
-        fr = FileResource.new(nil, :name, [])
+        fr = RDeployDoc::FileResource.new(nil, :name, [])
 
         fr.mode = 0000
         fr.posix_mode.should == '----------'
@@ -38,7 +38,7 @@ describe FileSystemResource do
       end
 
       it "should format the mode for a directory" do
-        dr = DirectoryResource.new(nil, :name, [])
+        dr = RDeployDoc::DirectoryResource.new(nil, :name, [])
 
         dr.mode = 0000
         dr.posix_mode.should == 'd---------'
