@@ -19,16 +19,19 @@ module RDeployDoc
   # Define the accessors and factory methods for each of the resources defined
   RESOURCE_TYPES.each do |resource|
     plural = Utils.pluralize(resource.to_s)
-    eval "def apply_to_#{plural}() unique_resources(#{plural}).each { |d| yield d if block_given?} end"
-    # Define the resource accessors
-    eval "def #{plural}() @#{resource}_resources ||= {} end"
-    eval <<EOF 
-  def #{resource}(args)
-    resource = #{resource.capitalize}Resource.new(@current_description, resource_name(args), resource_prerequisites(args))
-    yield resource if block_given?
-    #{plural}[resource.name] = resource
-  end
-EOF
+    module_eval <<-EOF
+      def apply_to_#{plural}
+        unique_resources(#{plural}).each { |d| yield d if block_given? } 
+      end
+      def #{plural} 
+        @#{resource}_resources ||= {} 
+      end
+      def #{resource}(args)
+        resource_inst = #{Utils.resource_class(resource)}.new(@current_description, resource_name(args), resource_prerequisites(args))
+        yield resource_inst if block_given?
+        #{plural}[resource_inst.name] = resource_inst
+      end
+    EOF
   end
 
   def desc(description) @current_description = description end

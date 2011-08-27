@@ -6,6 +6,10 @@ module RDeployDoc
       noun << 's'
     end
   
+    def self.resource_class(resource_symbol)
+      eval "#{resource_symbol.capitalize}Resource"
+    end
+
   end
 
 end
