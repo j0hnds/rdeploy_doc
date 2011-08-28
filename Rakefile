@@ -19,6 +19,8 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Tool for documenting deployment environments}
   gem.email = "dave.sieh@nursinghomequality.com"
   gem.authors = ["Dave Sieh"]
+  gem.bindir = 'bin'
+  gem.executables << 'rdeploy_doc'
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_runtime_dependency 'jabber4r', '> 0.1'

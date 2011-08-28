@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+#
+require 'rdeploy_doc'
+require 'optparse'
+require 'set'
+
+options = {}
+
+optparse = OptionParser.new do |opts|
+  # Set a banner, displayed at the top of the help screen
+  opts.banner = "Usage: rdeploy_doc [options] file"
+
+  options[:verbose] = false
+  opts.on('-v', '--verbose', "Be noisy when working") do
+    options[:verbose] = true
+  end
+
+  options[:listing] = false
+  opts.on('-l', '--listing', "Generate a posix-style listing of file system resources") do
+    options[:listing] = true
+  end
+
+  opts.on('-h', '--help', "Display the usage message") do
+    puts opts
+    exit
+  end
+end
+
+# Parse the command line
+optparse.parse!
+
+if options[:verbose]
+  puts "Verbose: true"
+  puts "Listing: #{options[:listing]}"
+end
+
+if ARGV.empty?
+  puts "Must specify a file to process."
+  exit
+end
+
+file_to_process = ARGV.first
+if !File.exists?(file_to_process)
+  puts "File does not exist: #{file_to_process}"
+  exit
+end
+
+include RDeployDoc
+
+File.open(file_to_process, "r") { |f| eval(f.read) }
+
+if options[:listing]
+  puts "All directories"
+  listed_paths = Set.new
+  apply_to_directories do |d|
+    if !listed_paths.member?(d)
+      puts d.path
+      puts d.to_posix
+      listed_paths << d
+      # List any children of the path
+      d.children.each do |c|
+        next unless c.is_a?(FileSystemResource)
+        next if listed_paths.member?(c)
+        puts c.to_posix
+        listed_paths << d
+      end
+    end
+  end
+end
