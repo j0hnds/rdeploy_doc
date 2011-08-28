@@ -3,6 +3,7 @@
 require 'rdeploy_doc'
 require 'optparse'
 require 'set'
+require 'erb'
 
 options = {}
 
@@ -18,6 +19,11 @@ optparse = OptionParser.new do |opts|
   options[:listing] = false
   opts.on('-l', '--listing', "Generate a posix-style listing of file system resources") do
     options[:listing] = true
+  end
+
+  options[:template] = nil
+  opts.on('-t', '--template FILE', "Use the specified ERB template to create output") do |file|
+    options[:template] = file
   end
 
   opts.on('-h', '--help', "Display the usage message") do
@@ -48,6 +54,18 @@ end
 include RDeployDoc
 
 File.open(file_to_process, "r") { |f| eval(f.read) }
+
+if options[:template]
+  template_file = options[:template]
+  if !File.exists?(template_file)
+    puts "Unable to open template file: #{template_file}"
+    exit
+  end
+
+  template = nil
+  File.open(template_file, 'r') { |f| template = ERB.new(f.read) }
+  puts template.result(binding)
+end
 
 if options[:listing]
   puts "All directories"
