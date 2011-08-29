@@ -7,6 +7,7 @@ require 'rdeploy_doc/directory_resource'
 require 'rdeploy_doc/file_resource'
 require 'rdeploy_doc/link_resource'
 require 'rdeploy_doc/utils'
+require 'rdeploy_doc/railtie' if defined?(Rails)
 
 module RDeployDoc
 
