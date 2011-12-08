@@ -65,7 +65,7 @@ file_to_process = ARGV.first
 
 include RDeployDoc
 
-File.open(file_to_process, "r") { |f| eval(f.read) }
+File.open(file_to_process, "r") { |f| eval(f.read, binding, file_to_process) }
 
 if options[:template]
   template_file = options[:template]

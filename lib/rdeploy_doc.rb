@@ -1,15 +1,4 @@
 # Require all the necessary code
-require 'rdeploy_doc/resource'
-require 'rdeploy_doc/package_resource'
-require 'rdeploy_doc/service_resource'
-require 'rdeploy_doc/file_system_resource'
-require 'rdeploy_doc/directory_resource'
-require 'rdeploy_doc/file_resource'
-require 'rdeploy_doc/link_resource'
-require 'rdeploy_doc/utils'
-require 'rdeploy_doc/railtie' if defined?(Rails)
-require 'prawn'
-
 module RDeployDoc
 
   RESOURCE_TYPES = [ :directory,
@@ -18,24 +7,35 @@ module RDeployDoc
                      :package,
                      :service,
                      :node ]
+end
+require 'rdeploy_doc/resource'
+require 'rdeploy_doc/package_resource'
+require 'rdeploy_doc/service_resource'
+require 'rdeploy_doc/file_system_resource'
+require 'rdeploy_doc/directory_resource'
+require 'rdeploy_doc/file_resource'
+require 'rdeploy_doc/link_resource'
+require 'rdeploy_doc/utils'
+require 'rdeploy_doc/node_resource'
+require 'rdeploy_doc/railtie' if defined?(Rails)
+require 'prawn'
+
+module RDeployDoc
 
   # Define the accessors and factory methods for each of the resources defined
   RESOURCE_TYPES.each do |resource|
     plural = Utils.pluralize(resource.to_s)
+    resource_list_accessor = (resource == :node) ? "@node_resources ||= {}" : "@current_node.#{plural}"
     module_eval <<-EOF
-      def apply_to_#{plural}
-        unique_resources(#{plural}).each { |d| yield d if block_given? } 
-      end
-      def top_level_#{plural}
-        @#{resource}_resources.values.select { |r| r.prerequisites.empty? }
-      end
       def #{plural} 
-        @#{resource}_resources ||= {} 
+        #{resource_list_accessor}
       end
       def #{resource}(args)
         resource_inst = #{Utils.resource_class(resource)}.new(@current_description, resource_name(args), resource_prerequisites(args))
+        @current_node = resource_inst if resource_inst.is_a?(RDeployDoc::NodeResource)
         yield resource_inst if block_given?
-        #{plural}[resource_inst.name] = resource_inst
+        @current_node.#{plural}[resource_inst.name] = resource_inst unless resource_inst.is_a?(RDeployDoc::NodeResource)
+        #{plural}[resource_inst.name] = resource_inst if resource_inst.is_a?(RDeployDoc::NodeResource)
       end
     EOF
   end
@@ -60,15 +60,15 @@ module RDeployDoc
     raise "Cannot write to file: #{output_file}" if output_file && !File.writable?(File.dirname(output_file))
     template = File.read(template_file)
     Prawn::Document.generate(output_file) do |pdf|
-      eval(template)
+      eval(template, binding, template_file)
     end
   end
   
   private
 
-  def unique_resources(resources)
-    resources.values.inject([]) { |a,r| a.concat((r.ordered_prerequisites(r.class) << r)) }.uniq
-  end
+  # def unique_resources(resources)
+  #   resources.values.inject([]) { |a,r| a.concat((r.ordered_prerequisites(r.class) << r)) }.uniq
+  # end
 
   def resource_name(args)
     name = args if args.is_a?(Symbol)
@@ -83,3 +83,4 @@ module RDeployDoc
   end
 
 end
+
