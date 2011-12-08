@@ -16,6 +16,11 @@ module RDeployDoc
       @prerequisites.inject([]) { |a,p| a.concat((p.ordered_prerequisites(clazz) << p)) if p.is_a?(clazz); a }.uniq
     end
 
+    def resource_type
+      name = self.class.name
+      name.slice(name.index('::')+2...name.index('Resource'))
+    end
+
   end
 
 end

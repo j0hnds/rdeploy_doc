@@ -21,6 +21,16 @@ optparse = OptionParser.new do |opts|
     options[:listing] = true
   end
 
+  options[:pdf] = nil
+  opts.on('-p', '--pdf PRAWN_TEMPLATE', "Generate a PDF document") do | prawn_template |
+    options[:pdf] = prawn_template
+  end
+
+  options[:outfile] = nil
+  opts.on('-o', '--output OUTPUT_FILE', "Specify the path to the output file") do | output_file |
+    options[:outfile] = output_file
+  end
+
   options[:template] = nil
   opts.on('-t', '--template FILE', "Use the specified ERB template to create output") do |file|
     options[:template] = file
@@ -40,16 +50,18 @@ if options[:verbose]
   puts "Listing: #{options[:listing]}"
 end
 
-if ARGV.empty?
-  puts "Must specify a file to process."
-  exit
+if options[:pdf]
+  ( puts "Invalid PDF template file specified: #{options[:pdf]}"; exit ) if !File.exists?(options[:pdf])
+  ( puts "Must specify an output file when generating a PDF"; exit ) if options[:outfile].nil?
 end
 
+( puts "Unable to write output file: #{options[:outfile]}"; exit ) if options[:outfile] and !File.writable?(File.dirname(options[:outfile]))
+
+( puts "Must specify a file to process."; exit ) if ARGV.empty?
+
 file_to_process = ARGV.first
-if !File.exists?(file_to_process)
-  puts "File does not exist: #{file_to_process}"
-  exit
-end
+
+( puts "File does not exist: #{file_to_process}"; exit ) if !File.exists?(file_to_process)
 
 include RDeployDoc
 
@@ -57,17 +69,11 @@ File.open(file_to_process, "r") { |f| eval(f.read) }
 
 if options[:template]
   template_file = options[:template]
-  if !File.exists?(template_file)
-    puts "Unable to open template file: #{template_file}"
-    exit
-  end
-
-  template = nil
-  File.open(template_file, 'r') { |f| template = ERB.new(f.read) }
-  puts template.result(binding)
-end
-
-if options[:listing]
+  ( puts "Unable to open template file: #{template_file}"; exit ) if !File.exists?(template_file)
+  render_erb_template(template_file, options[:outfile])
+elsif options[:pdf]
+  render_prawn_template(options[:pdf], options[:outfile])
+elsif options[:listing]
   puts "All directories"
   listed_paths = Set.new
   apply_to_directories do |d|
