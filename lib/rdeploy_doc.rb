@@ -31,11 +31,12 @@ module RDeployDoc
         #{resource_list_accessor}
       end
       def #{resource}(args)
-        resource_inst = #{Utils.resource_class(resource)}.new(@current_description, resource_name(args), resource_prerequisites(args))
-        @current_node = resource_inst if resource_inst.is_a?(RDeployDoc::NodeResource)
-        yield resource_inst if block_given?
-        @current_node.#{plural}[resource_inst.name] = resource_inst unless resource_inst.is_a?(RDeployDoc::NodeResource)
-        #{plural}[resource_inst.name] = resource_inst if resource_inst.is_a?(RDeployDoc::NodeResource)
+        #{Utils.resource_class(resource)}.new(@current_description, resource_name(args), resource_prerequisites(args)).tap do | resource_inst |
+          @current_node = resource_inst if resource_inst.is_a?(RDeployDoc::NodeResource)
+          yield resource_inst if block_given?
+          @current_node.#{plural}[resource_inst.name] = resource_inst unless resource_inst.is_a?(RDeployDoc::NodeResource)
+          #{plural}[resource_inst.name] = resource_inst if resource_inst.is_a?(RDeployDoc::NodeResource)
+        end
       end
     EOF
   end

@@ -7,6 +7,11 @@ describe RDeployDoc do
 
     context "Directories" do
 
+      before(:each) do
+        # Need to have a node before all directories
+        node = node(:the_node)
+      end
+
       it "should construct a directory resource with no description and no block" do
         dir = directory(:a_dir => :prereq)
         dir.should_not be_nil
@@ -41,6 +46,11 @@ describe RDeployDoc do
 
     context "Files" do
 
+      before(:each) do
+        # Need to have a node before all files
+        node = node(:the_node)
+      end
+
       it "should construct a file resource with no description and no block" do
         f = file(:a_file => :prereq)
         f.should_not be_nil
@@ -74,6 +84,11 @@ describe RDeployDoc do
     end
 
     context "Links" do
+
+      before(:each) do
+        # Need to have a node before all links
+        node = node(:the_node)
+      end
 
       it "should construct a link resource with no description and no block" do
         l = link(:a_link => :prereq)
@@ -111,6 +126,11 @@ describe RDeployDoc do
 
     context "Packages" do
 
+      before(:each) do
+        # Need to have a node before all packages
+        node = node(:the_node)
+      end
+
       it "should construct a package resource with no description and no block" do
         p = package(:a_package => :prereq)
         p.should_not be_nil
@@ -138,6 +158,11 @@ describe RDeployDoc do
     end
 
     context "Service" do
+
+      before(:each) do
+        # Need to have a node before all services
+        node = node(:the_node)
+      end
 
       it "should construct a service resource with no description and no block" do
         s = service(:a_service => :prereq)
@@ -224,6 +249,11 @@ describe RDeployDoc do
 
   context "Resource Accessors" do
 
+      before(:each) do
+        # Need to have a node before all accessors
+        node = node(:the_node)
+      end
+
     it "should allow access to the hash of directory resources" do
       dirs = directories
       dirs.should_not be_nil
@@ -269,6 +299,7 @@ describe RDeployDoc do
   context "Apply Method" do
 
     before(:each) do 
+      @node = node(:some_node)
       directory :instance_directory do |d|
         d.path = "/var/www/abaqis"
         d.owner = 'root'
@@ -303,7 +334,7 @@ describe RDeployDoc do
     
     it "should apply a block of code to the ordered set of directories" do
       paths = []
-      apply_to_directories do |d|
+      @node.apply_to_directories do |d|
         paths << d.path
       end
       paths.should == [ "/var/www/abaqis",
@@ -314,7 +345,7 @@ describe RDeployDoc do
 
     it "should apply a block of code to the ordered set of files" do
       paths = []
-      apply_to_files do |f|
+      @node.apply_to_files do |f|
         paths << f.path
       end
       paths.should == [ "/var/www/abaqis/shared/config/bundle_config" ]
