@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rdeploy_doc}
-  s.version = "0.2.0"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Dave Sieh}]
@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
     "lib/rdeploy_doc/resource.rb",
     "lib/rdeploy_doc/service_resource.rb",
     "lib/rdeploy_doc/utils.rb",
+    "rdeploy_doc.gemspec",
     "spec/directory_resource_spec.rb",
     "spec/file_resource_spec.rb",
     "spec/file_system_resource_spec.rb",
@@ -70,17 +71,20 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<prawn>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<rspec>, [">= 2.6.0"])
     else
+      s.add_dependency(%q<prawn>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<rspec>, [">= 2.6.0"])
     end
   else
+    s.add_dependency(%q<prawn>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
